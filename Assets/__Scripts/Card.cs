@@ -15,14 +15,55 @@ public class Card : MonoBehaviour {
 	public GameObject back;  // back of card;
 	public CardDefinition def;  // from DeckXML.xml		
 
-	// Use this for initialization
-	void Start () {
+	public SpriteRenderer[] spriteRenderers;
 	
+
+	void Start() {
+		SetSortOrder (0);
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+
+	public bool faceUp {
+		get {
+			return (!back.activeSelf);
+		}
+		set {
+			back.SetActive (!value);
+		}
+	}
+
+	public void PopulateSpriteRenderers() {
+		if (spriteRenderers == null || spriteRenderers.Length == 0) {
+			spriteRenderers = GetComponentsInChildren<SpriteRenderer> ();
+		}
+	}
+	public void SetSortingLayerName (string tSLN) {
+		PopulateSpriteRenderers ();
+
+		foreach (SpriteRenderer tSR in spriteRenderers){
+			tSR.sortingLayerName = tSLN;
+		}
+	}
+
+	public void SetSortOrder (int s0rd) {
+		PopulateSpriteRenderers ();
+		foreach (SpriteRenderer tSR in spriteRenderers) {
+			if (tSR.gameObject == this.gameObject) {
+				tSR.sortingOrder = s0rd;
+				continue;
+			}
+			switch (tSR.gameObject.name) {
+			case "back":
+				tSR.sortingOrder = s0rd+2;
+				break;
+			case "face":
+			default:
+				tSR.sortingOrder = s0rd+1;
+				break;
+			}
+		}
+	}
+	virtual public void OnMouseUpAsButton(){
+		print (name);
 	}
 } // class Card
 
